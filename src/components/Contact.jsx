@@ -2,43 +2,34 @@ import { useState, useRef } from "react";
 import { FaInstagram, FaPhone, FaEnvelope, FaWhatsapp } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 import Section from "./Section";
-import Button from "./Button";
 import { content } from "../data/content";
 
-export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", service: "", message: "" });
-  const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState(null);
-  const formRef = useRef();
+// ─── EmailJS config ─────────────────────────────────────────────────────────
+// Create a .env.local file in the project root with these values:
+//   VITE_EMAILJS_SERVICE_ID=your_service_id
+//   VITE_EMAILJS_TEMPLATE_ID=your_template_id
+//   VITE_EMAILJS_PUBLIC_KEY=your_public_key
+// Get them from: https://dashboard.emailjs.com
+// ─────────────────────────────────────────────────────────────────────────────
+const EJ_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EJ_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EJ_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+const INITIAL = { name: "", email: "", phone: "", company: "", service: "", message: "" };
+
+export default function Contact() {
+  const [form, setForm]     = useState(INITIAL);
+  const [status, setStatus] = useState("idle");
+  const formRef             = useRef();
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSending(true);
-    setStatus(null);
-
-    // EmailJS: Replace these with your actual EmailJS service ID, template ID, and public key
-    // Sign up at https://www.emailjs.com/ and create a service + template
-    emailjs
-      .sendForm(
-        "YOUR_SERVICE_ID",    // Replace with your EmailJS service ID
-        "YOUR_TEMPLATE_ID",   // Replace with your EmailJS template ID
-        formRef.current,
-        "YOUR_PUBLIC_KEY"     // Replace with your EmailJS public key
-      )
-      .then(
-        () => {
-          setStatus("success");
-          setForm({ name: "", email: "", phone: "", message: "" });
-        },
-        () => {
-          setStatus("error");
-        }
-      )
-      .finally(() => setSending(false));
+    setStatus("sending");
+    emailjs.sendForm(EJ_SERVICE, EJ_TEMPLATE, formRef.current, EJ_KEY)
+      .then(() => { setStatus("success"); setForm(INITIAL); })
+      .catch(() => setStatus("error"));
   };
 
   return (
@@ -115,51 +106,17 @@ export default function Contact() {
         </div>
 
         {/* Form */}
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className="space-y-4"
-        >
-          <input
-            name="name"
-            type="text"
-            placeholder="Your Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors"
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Your Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors"
-          />
-          <input
-            name="phone"
-            type="tel"
-            placeholder="Your Phone Number"
-            value={form.phone}
-            onChange={handleChange}
-            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors"
-          />
-          <input
-            name="company"
-            type="text"
-            placeholder="Company / Brand Name"
-            value={form.company}
-            onChange={handleChange}
-            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors"
-          />
-          <select
-            name="service"
-            value={form.service}
-            onChange={handleChange}
-            className="w-full p-4 bg-gray-900 border border-white/20 rounded-xl text-white focus:outline-none focus:border-orange-400/50 transition-colors"
-          >
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+          <input name="name" type="text" placeholder="Your Name" value={form.name} onChange={handleChange} required
+            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors" />
+          <input name="email" type="email" placeholder="Your Email" value={form.email} onChange={handleChange} required
+            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors" />
+          <input name="phone" type="tel" placeholder="Your Phone Number" value={form.phone} onChange={handleChange}
+            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors" />
+          <input name="company" type="text" placeholder="Company / Brand Name" value={form.company} onChange={handleChange}
+            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors" />
+          <select name="service" value={form.service} onChange={handleChange}
+            className="w-full p-4 bg-gray-900 border border-white/20 rounded-xl text-white focus:outline-none focus:border-orange-400/50 transition-colors">
             <option value="" disabled>Service Interested In</option>
             <option value="Content Creation">Content Creation</option>
             <option value="Social Media Management">Social Media Management</option>
@@ -168,23 +125,26 @@ export default function Contact() {
             <option value="Video Production">Video Production</option>
             <option value="Other">Other</option>
           </select>
-          <textarea
-            name="message"
-            placeholder="Your Message"
-            rows={4}
-            value={form.message}
-            onChange={handleChange}
-            required
-            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors resize-none"
-          />
-          <Button variant="primary" className="w-full text-center !bg-orange-500 hover:!bg-orange-600 !text-white !shadow-orange-500/20">
-            {sending ? "Sending..." : "Send Message"}
-          </Button>
+          <textarea name="message" placeholder="Your Message" rows={4} value={form.message} onChange={handleChange} required
+            className="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-orange-200/50 focus:outline-none focus:border-orange-400/50 transition-colors resize-none" />
+
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="w-full py-4 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-bold rounded-xl transition-colors shadow-lg shadow-orange-500/20"
+          >
+            {status === "sending" ? "Sending…" : "Send Message"}
+          </button>
+
           {status === "success" && (
-            <p className="text-green-400 text-sm text-center">Message sent successfully! We&apos;ll get back to you soon.</p>
+            <p className="text-green-400 text-sm text-center">
+              ✓ Message sent! We&apos;ll get back to you soon.
+            </p>
           )}
           {status === "error" && (
-            <p className="text-red-400 text-sm text-center">Something went wrong. Please try again or contact us directly.</p>
+            <p className="text-red-400 text-sm text-center">
+              Something went wrong. Please try again or reach us on WhatsApp directly.
+            </p>
           )}
         </form>
       </div>

@@ -1,5 +1,6 @@
 import Section from "./Section";
 import Card from "./Card";
+import ElectricBorder from "./ElectricBorder";
 import { content } from "../data/content";
 
 export default function WhatWeDo() {
@@ -12,9 +13,11 @@ export default function WhatWeDo() {
         We craft digital experiences that drive real business growth.
       </p>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-16">
         {content.servicesHighlight.map((item, i) => (
-          <Card key={i} title={item.title} desc={item.desc} icon={item.icon} />
+          <ElectricBorder key={i} color="#9333ea" speed={0.8} chaos={0.1} borderRadius={16}>
+            <Card title={item.title} desc={item.desc} icon={item.icon} />
+          </ElectricBorder>
         ))}
       </div>
     </Section>

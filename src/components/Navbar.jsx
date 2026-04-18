@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { FaInstagram, FaWhatsapp } from "react-icons/fa";
-import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { content } from "../data/content";
 import logo from "../assets/logo/WhatsApp Image 2026-04-18 at 20.44.43.jpeg";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -23,18 +21,32 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        {/* Logo */}
         <a href="#home" className="flex items-center gap-3 group">
-          <img
-            src={logo}
-            alt="Zoomify Media"
-            className="h-10 w-10 rounded-full object-cover border-2 border-orange-500/50 group-hover:border-orange-500 transition-colors"
-          />
-          <span className="text-xl font-bold text-white tracking-tight">
-            Zoomify<span className="text-orange-500">Media</span>
-          </span>
+          <div className="relative p-[2px] rounded-full bg-gradient-to-br from-orange-400 via-orange-500 to-yellow-400 shadow-md shadow-orange-500/40 group-hover:shadow-orange-400/60 transition-shadow duration-300">
+            <img
+              src={logo}
+              alt="Zoomify Media"
+              className="h-10 w-10 rounded-full object-cover block"
+            />
+          </div>
+          <div className="flex flex-col leading-none select-none">
+            <span
+              className="text-lg font-black tracking-wide"
+              style={{ background: "linear-gradient(90deg,#fff 0%,#e2e8f0 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+            >
+              ZOOMIFY
+            </span>
+            <span
+              className="text-[10px] font-bold tracking-[0.22em] uppercase"
+              style={{ background: "linear-gradient(90deg,#f97316 0%,#fb923c 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+            >
+              MEDIA
+            </span>
+          </div>
         </a>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — StaggeredMenu handles mobile */}
         <ul className="hidden md:flex items-center gap-6">
           {content.nav.map((item) => (
             <li key={item.href}>
@@ -75,62 +87,7 @@ export default function Navbar() {
             </a>
           </li>
         </ul>
-
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden text-white text-2xl"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          {open ? <HiX /> : <HiMenuAlt3 />}
-        </button>
       </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-gray-950/95 backdrop-blur-md border-t border-gray-800 px-6 pb-6">
-          <ul className="flex flex-col gap-4 pt-4">
-            {content.nav.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="text-sm font-medium text-gray-300 hover:text-orange-400 transition-colors"
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            <li className="flex items-center gap-4 pt-2">
-              <a
-                href={content.contact.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-orange-400 font-medium"
-              >
-                <FaInstagram size={18} /> Instagram
-              </a>
-              <a
-                href={`https://wa.me/${content.contact.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-green-400 font-medium"
-              >
-                <FaWhatsapp size={18} /> WhatsApp
-              </a>
-            </li>
-            <li>
-              <a
-                href="#contact"
-                className="inline-block px-5 py-2 bg-orange-500 text-white text-sm font-semibold rounded-lg"
-                onClick={() => setOpen(false)}
-              >
-                Get Started
-              </a>
-            </li>
-          </ul>
-        </div>
-      )}
     </nav>
   );
 }

@@ -133,6 +133,7 @@ export const content = {
 
   nav: [
     { label: "Home", href: "#home" },
+    { label: "What We Do", href: "#whatwedo" },
     { label: "Portfolio", href: "#portfolio" },
     { label: "Services", href: "#services" },
     { label: "About", href: "#about" },
