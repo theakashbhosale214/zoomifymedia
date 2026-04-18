@@ -1,10 +1,7 @@
-import { useState } from "react";
 import Section from "./Section";
 import { content } from "../data/content";
 
 export default function Services() {
-  const [expanded, setExpanded] = useState(null);
-
   return (
     <Section id="services" className="bg-light">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-gray-900">
@@ -14,31 +11,19 @@ export default function Services() {
         Full-spectrum digital marketing solutions tailored for your brand.
       </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {content.services.map((service, i) => (
           <div
             key={i}
-            className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${
-              expanded === i
-                ? "border-primary bg-primary text-white shadow-lg scale-[1.02]"
-                : "border-gray-200 bg-white hover:border-primary hover:shadow-md"
-            }`}
-            onClick={() => setExpanded(expanded === i ? null : i)}
+            className="group p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-orange-200 hover:-translate-y-1 transition-all duration-300"
           >
-            <h3
-              className={`text-lg font-bold mb-2 ${
-                expanded === i ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              {service.icon}
+            </div>
+            <h3 className="text-lg font-bold mb-3 text-gray-900">
               {service.title}
             </h3>
-            <p
-              className={`text-sm leading-relaxed transition-all duration-300 ${
-                expanded === i
-                  ? "text-purple-100 max-h-40 opacity-100"
-                  : "text-gray-500 max-h-0 opacity-0 overflow-hidden"
-              }`}
-            >
+            <p className="text-sm text-gray-500 leading-relaxed">
               {service.desc}
             </p>
           </div>

@@ -13,17 +13,17 @@ export default function Portfolio() {
         {content.portfolio.map((item, i) => (
           <div
             key={i}
-            className="group relative bg-gradient-to-br from-purple-100 to-accent h-44 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="group relative bg-gray-100 h-44 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200"
           >
             {item.image ? (
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
               <div className="flex items-center justify-center h-full">
-                <span className="text-primary font-bold text-lg opacity-60 group-hover:opacity-100 transition-opacity">
+                <span className="text-gray-400 font-bold text-lg opacity-60 group-hover:opacity-100 transition-opacity">
                   {item.name}
                 </span>
               </div>

@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #6C5CE7;
-  --color-primary-dark: #5A4BD1;
-  --color-secondary: #A29BFE;
+  --color-primary: #1a1a2e;
+  --color-primary-dark: #0f0f1e;
+  --color-secondary: #FF6B35;
   --color-light: #F8F9FF;
-  --color-accent: #E8E5FF;
+  --color-accent: #FFF3ED;
   --font-sans: 'Inter', sans-serif;
 }
 
@@ -16,4 +16,9 @@ html {
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Consistent section spacing */
+section {
+  scroll-margin-top: 64px;
 }

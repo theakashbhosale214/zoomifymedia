@@ -1,5 +1,6 @@
 import Section from "./Section";
 import { content } from "../data/content";
+import CountUp from "./CountUp";
 
 export default function About() {
   return (
@@ -8,22 +9,26 @@ export default function About() {
         {content.about.title}
       </h2>
 
-      <p className="text-center max-w-3xl mx-auto text-gray-600 text-lg leading-relaxed">
-        {content.about.text}
-      </p>
+      <div className="max-w-3xl mx-auto space-y-4">
+        {content.about.text.split("\n\n").map((paragraph, i) => (
+          <p key={i} className="text-center text-gray-600 text-lg leading-relaxed">
+            {paragraph}
+          </p>
+        ))}
+      </div>
 
-      <div className="flex justify-center gap-12 mt-12">
+      <div className="flex flex-wrap justify-center gap-16 mt-12">
         <div className="text-center">
-          <p className="text-4xl font-black text-primary">100+</p>
-          <p className="text-sm text-gray-500 mt-1">Brands Served</p>
+          <p className="text-5xl font-black text-orange-500">
+            <CountUp from={0} to={200} duration={2} />+
+          </p>
+          <p className="text-sm text-gray-500 mt-2">Brand Collaborations</p>
         </div>
         <div className="text-center">
-          <p className="text-4xl font-black text-primary">500+</p>
-          <p className="text-sm text-gray-500 mt-1">Projects Done</p>
-        </div>
-        <div className="text-center">
-          <p className="text-4xl font-black text-primary">50M+</p>
-          <p className="text-sm text-gray-500 mt-1">Reach Generated</p>
+          <p className="text-5xl font-black text-orange-500">
+            <CountUp from={0} to={2000} separator="," duration={2.5} />+
+          </p>
+          <p className="text-sm text-gray-500 mt-2">Projects Done</p>
         </div>
       </div>
     </Section>
