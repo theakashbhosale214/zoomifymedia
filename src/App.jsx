@@ -1,6 +1,5 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import WhatWeDo from "./components/WhatWeDo";
 import Portfolio from "./components/Portfolio";
 import Services from "./components/Services";
 import WhyChooseUs from "./components/WhyChooseUs";
@@ -24,7 +23,6 @@ export default function App() {
     <>
       <Navbar />
       <Hero />
-      <WhatWeDo />
       <Portfolio />
       <Services />
       <WhyChooseUs />

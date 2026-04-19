@@ -1,5 +1,4 @@
 import Section from "./Section";
-import MagicBento from "./MagicBento";
 import LogoLoop from "./LogoLoop";
 import { content } from "../data/content";
 
@@ -28,15 +27,6 @@ export default function Portfolio() {
         )}
       </div>
 
-      {/* Interactive bento grid */}
-      <MagicBento
-        portfolioItems={content.portfolio}
-        enableStars
-        enableSpotlight
-        enableBorderGlow
-        particleCount={8}
-        glowColor="255, 107, 53"
-      />
     </Section>
   );
 }

@@ -1,5 +1,4 @@
 import Section from "./Section";
-import ElectricBorder from "./ElectricBorder";
 import { content } from "../data/content";
 
 export default function Services() {
@@ -14,19 +13,20 @@ export default function Services() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {content.services.map((service, i) => (
-          <ElectricBorder key={i} color="#9333ea" speed={0.7} chaos={0.09} borderRadius={16}>
-            <div className="group p-8 bg-white rounded-2xl transition-all duration-300">
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {service.icon}
-              </div>
-              <h3 className="text-lg font-bold mb-3 text-gray-900">
-                {service.title}
-              </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                {service.desc}
-              </p>
+          <div
+            key={i}
+            className="group p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-orange-200 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              {service.icon}
             </div>
-          </ElectricBorder>
+            <h3 className="text-lg font-bold mb-3 text-gray-900">
+              {service.title}
+            </h3>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              {service.desc}
+            </p>
+          </div>
         ))}
       </div>
     </Section>

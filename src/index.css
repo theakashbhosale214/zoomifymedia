@@ -6,7 +6,8 @@
   --color-secondary: #FF6B35;
   --color-light: #F8F9FF;
   --color-accent: #FFF3ED;
-  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Syne', sans-serif;
+  --font-sans: 'DM Sans', sans-serif;
 }
 
 html {
@@ -16,6 +17,10 @@ html {
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 /* Consistent section spacing */
