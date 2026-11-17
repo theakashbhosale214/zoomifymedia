@@ -5,9 +5,9 @@
  */
 export default function LogoMark({
   className = "",
-  a = "var(--color-tomato)",
+  a = "var(--color-peach)",
   b = "currentColor",
-  c = "var(--color-sage-deep)",
+  c = "var(--color-powder)",
   title,
 }) {
   return (
@@ -20,7 +20,7 @@ export default function LogoMark({
     >
       <path d="M136 0 L177 72 L83 233 L0 233 Z" fill={a} />
       <path d="M177 72 L268 233 L183 233 L134 147 Z" fill={b} />
-      <path d="M135 147 L183 233 L135 320 L87 233 Z" fill={c} fillOpacity="0.92" />
+      <path d="M135 147 L183 233 L135 320 L87 233 Z" fill={c} fillOpacity="0.95" />
     </svg>
   );
 }

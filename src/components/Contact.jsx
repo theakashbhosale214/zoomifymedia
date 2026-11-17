@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import emailjs from "@emailjs/browser";
+import { FaEnvelope, FaInstagram, FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
 import { content } from "../data/content";
 import { SELECT_SERVICE_EVENT } from "../lib/events";
 import SectionLabel from "./SectionLabel";
@@ -11,8 +12,7 @@ import { Reveal, SplitText } from "./Motion";
 //   VITE_EMAILJS_SERVICE_ID=your_service_id
 //   VITE_EMAILJS_TEMPLATE_ID=your_template_id
 //   VITE_EMAILJS_PUBLIC_KEY=your_public_key
-// Get them from: https://dashboard.emailjs.com
-// The form still posts the same field names (name, email, phone, company,
+// The form posts the same field names as before (name, email, phone, company,
 // service, message), so an existing EmailJS template keeps working.
 // ─────────────────────────────────────────────────────────────────────────────
 const EJ_SERVICE = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -22,24 +22,28 @@ const EJ_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 const INITIAL = { name: "", email: "", phone: "", company: "", service: "", message: "" };
 const SERVICE_OPTIONS = [...content.services.map((s) => s.title), "Something else"];
 
-function ContactLine({ label, children, href, external }) {
+function Method({ icon: Icon, label, value, href, external, accent, children }) {
   return (
-    <a
-      href={href}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group flex items-baseline justify-between gap-4 border-b border-ink/15 py-4"
+    <div
+      className={`group relative flex min-h-[8rem] flex-col justify-between sm:min-h-[9.5rem] rounded-[1.4rem] p-5 transition-transform duration-500 ease-expo hover:-translate-y-1 ${
+        accent ? "bg-night text-lavender" : "bg-paper text-ink ring-1 ring-ink/6"
+      }`}
     >
-      <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/50">{label}</span>
-      <span className="flex items-center gap-3 text-right text-[1.05rem] transition-colors group-hover:text-tomato md:text-lg">
-        {children}
-        <span
-          aria-hidden="true"
-          className="inline-block -translate-x-1 opacity-0 transition-all duration-500 ease-expo group-hover:translate-x-0 group-hover:opacity-100"
-        >
-          ↗
+      <div className="flex items-center justify-between">
+        <span className={`grid h-10 w-10 place-items-center rounded-full ${accent ? "bg-peach text-night" : "bg-lavender text-ink"}`}>
+          <Icon />
         </span>
-      </span>
-    </a>
+        {children}
+      </div>
+      <a
+        href={href}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        className="after:absolute after:inset-0 after:rounded-[1.4rem]"
+      >
+        <span className={`eyebrow block !text-[10px] ${accent ? "text-lavender/55" : "text-mist"}`}>{label}</span>
+        <span className="mt-1 block font-display text-[15px] font-medium tracking-[-0.01em] [overflow-wrap:anywhere]">{value}</span>
+      </a>
+    </div>
   );
 }
 
@@ -50,7 +54,6 @@ export default function Contact() {
   const formRef = useRef(null);
   const c = content.contact;
 
-  // Clicking a service row pre-selects it here.
   useEffect(() => {
     const onSelect = (e) => setForm((f) => ({ ...f, service: e.detail }));
     window.addEventListener(SELECT_SERVICE_EVENT, onSelect);
@@ -71,7 +74,8 @@ export default function Contact() {
       .catch(() => setStatus("error"));
   };
 
-  const copyEmail = async () => {
+  const copyEmail = async (e) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(c.email);
       setCopied(true);
@@ -82,170 +86,159 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" tabIndex={-1} className="relative bg-bone px-5 py-24 sm:px-8 md:px-12 md:py-36">
-      <div className="mx-auto max-w-[1680px]">
-        <SectionLabel index="05" label="Contact" aside="Start a conversation" />
+    <section id="contact" tabIndex={-1} data-theme="light" className="relative bg-lavender px-5 py-24 sm:px-8 md:px-12 md:py-32">
+      <div className="mx-auto grid max-w-[1240px] gap-14 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-5">
+          <Reveal>
+            <SectionLabel index="07" label="Contact" />
+          </Reveal>
+          <SplitText
+            text="Tell us about your *brand.*"
+            className="mt-8 font-display text-[clamp(2.5rem,5.6vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.045em]"
+          />
+          <Reveal delay={0.1}>
+            <p className="mt-6 max-w-sm text-[16px] leading-relaxed text-ink/70">
+              A launch, a rebrand, or just more customers. Share a few details and we&apos;ll come back with ideas,
+              not a sales pitch.
+            </p>
+          </Reveal>
 
-        <div className="mt-12 grid gap-16 md:mt-16 lg:grid-cols-12 lg:gap-6">
-          {/* left: pitch + details */}
-          <div className="lg:col-span-5">
-            <SplitText
-              text="Tell us about your *brand.*"
-              className="font-display text-[clamp(2.6rem,6vw,6.25rem)] leading-[0.93] tracking-[-0.04em]"
-            />
-            <Reveal delay={0.1}>
-              <p className="mt-6 max-w-sm text-[15.5px] leading-relaxed text-ink/65">
-                A launch, a rebrand, or just more customers. Share a few details and we&apos;ll come back
-                with ideas, not a sales pitch.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.15} className="mt-12 border-t border-ink/15">
-              <div className="flex items-baseline justify-between gap-4 border-b border-ink/15 py-4">
-                <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/50">Email</span>
-                <span className="flex items-center gap-3">
-                  <a href={`mailto:${c.email}`} className="text-[1.05rem] transition-colors hover:text-tomato md:text-lg">
-                    {c.email}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={copyEmail}
-                    className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/60 transition-colors hover:border-ink hover:text-ink"
-                  >
-                    <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
-                  </button>
-                </span>
-              </div>
-              {c.phones.map((p, i) => (
-                <ContactLine key={p} label={`Phone ${i + 1}`} href={`tel:${p.replace(/\s/g, "")}`}>
-                  {p}
-                </ContactLine>
-              ))}
-              <ContactLine label="WhatsApp" href={`https://wa.me/${c.whatsapp}`} external>
-                {c.whatsappDisplay}
-              </ContactLine>
-              <ContactLine label="Instagram" href={c.instagramUrl} external>
-                {c.instagram}
-              </ContactLine>
-            </Reveal>
-          </div>
-
-          {/* right: form */}
-          <Reveal delay={0.1} className="lg:col-span-6 lg:col-start-7">
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              className="rounded-[1.75rem] border border-ink/10 bg-paper p-6 shadow-[0_40px_80px_-60px_rgb(20_26_22/0.45)] sm:p-9 md:p-12"
-            >
-              <div className="grid gap-7 sm:grid-cols-2 sm:gap-x-6">
-                <label className="block">
-                  <span className="field-label">Your name *</span>
-                  <input name="name" type="text" required autoComplete="name" placeholder="Jane Doe" value={form.name} onChange={handleChange} className="field-input" />
-                </label>
-                <label className="block">
-                  <span className="field-label">Email *</span>
-                  <input name="email" type="email" required autoComplete="email" placeholder="you@brand.com" value={form.email} onChange={handleChange} className="field-input" />
-                </label>
-                <label className="block">
-                  <span className="field-label">Phone</span>
-                  <input name="phone" type="tel" autoComplete="tel" placeholder="+91" value={form.phone} onChange={handleChange} className="field-input" />
-                </label>
-                <label className="block">
-                  <span className="field-label">Company / brand</span>
-                  <input name="company" type="text" autoComplete="organization" placeholder="Your brand" value={form.company} onChange={handleChange} className="field-input" />
-                </label>
-              </div>
-
-              <fieldset className="mt-9">
-                <legend className="field-label">I&apos;m interested in</legend>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {SERVICE_OPTIONS.map((opt) => {
-                    const active = form.service === opt;
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() => setForm((f) => ({ ...f, service: active ? "" : opt }))}
-                        className={`rounded-full border px-4 py-2 text-[13.5px] transition-all duration-300 ${
-                          active
-                            ? "border-ink bg-ink text-bone"
-                            : "border-ink/15 text-ink/75 hover:border-ink/50 hover:text-ink"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-                <input type="hidden" name="service" value={form.service} />
-              </fieldset>
-
-              <label className="mt-9 block">
-                <span className="field-label">Tell us a little more *</span>
-                <textarea
-                  name="message"
-                  rows={4}
-                  required
-                  placeholder="Goals, timelines, what's not working right now…"
-                  value={form.message}
-                  onChange={handleChange}
-                  className="field-input resize-none"
-                />
-              </label>
-
-              <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-ink py-2 pl-6 pr-2 text-[15px] font-medium text-bone transition-colors duration-300 hover:bg-tomato disabled:opacity-60"
-                >
-                  {status === "sending" ? "Sending…" : "Send message"}
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-tomato transition-all duration-500 ease-expo group-hover:rotate-45 group-hover:bg-ink">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" strokeWidth="1.6" />
-                    </svg>
-                  </span>
-                </button>
-                <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink/45">
-                  Or WhatsApp{" "}
-                  <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-4 hover:text-tomato">
-                    {c.whatsappDisplay}
-                  </a>
-                </p>
-              </div>
-
-              <div aria-live="polite">
-                <AnimatePresence>
-                  {status === "success" && (
-                    <motion.p
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="mt-6 rounded-xl bg-sage-soft px-4 py-3 text-sm text-ink"
-                    >
-                      Message sent. We&apos;ll get back to you soon.
-                    </motion.p>
-                  )}
-                  {status === "error" && (
-                    <motion.p
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="mt-6 rounded-xl bg-tomato/10 px-4 py-3 text-sm text-tomato-deep"
-                    >
-                      Something went wrong. Please try again, or reach us on{" "}
-                      <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer" className="underline">
-                        WhatsApp
-                      </a>{" "}
-                      directly.
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </div>
-            </form>
+          <Reveal delay={0.15} className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Method icon={FaWhatsapp} label="WhatsApp · fastest" value={c.whatsappDisplay} href={`https://wa.me/${c.whatsapp}`} external accent />
+            <Method icon={FaPhoneAlt} label="Call us" value={c.phones[0]} href={`tel:${c.phones[0].replace(/\s/g, "")}`}>
+              <a href={`tel:${c.phones[1].replace(/\s/g, "")}`} className="relative z-10 font-mono text-[11px] text-mist hover:text-ink">
+                or {c.phones[1]}
+              </a>
+            </Method>
+            <Method icon={FaEnvelope} label="Email" value={c.email} href={`mailto:${c.email}`}>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="eyebrow relative z-10 rounded-full border border-ink/12 px-2.5 py-1 !text-[9.5px] text-mist transition-colors hover:border-ink hover:text-ink"
+              >
+                <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+              </button>
+            </Method>
+            <Method icon={FaInstagram} label="Instagram" value={c.instagram} href={c.instagramUrl} external />
           </Reveal>
         </div>
+
+        <Reveal delay={0.1} className="lg:col-span-7">
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="rounded-[2rem] bg-paper p-6 shadow-[0_40px_90px_-60px_rgb(18_20_42/0.5)] ring-1 ring-ink/6 sm:p-9 md:p-11"
+          >
+            <p className="font-display text-2xl font-medium tracking-[-0.025em]">Start a project</p>
+            <p className="mt-1 text-[15px] text-mist">Takes about a minute.</p>
+
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <label className="block">
+                <span className="field-label">Your name *</span>
+                <input name="name" type="text" required autoComplete="name" placeholder="Jane Doe" value={form.name} onChange={handleChange} className="field-input" />
+              </label>
+              <label className="block">
+                <span className="field-label">Email *</span>
+                <input name="email" type="email" required autoComplete="email" placeholder="you@brand.com" value={form.email} onChange={handleChange} className="field-input" />
+              </label>
+              <label className="block">
+                <span className="field-label">Phone</span>
+                <input name="phone" type="tel" autoComplete="tel" placeholder="+91" value={form.phone} onChange={handleChange} className="field-input" />
+              </label>
+              <label className="block">
+                <span className="field-label">Company / brand</span>
+                <input name="company" type="text" autoComplete="organization" placeholder="Your brand" value={form.company} onChange={handleChange} className="field-input" />
+              </label>
+            </div>
+
+            <fieldset className="mt-7">
+              <legend className="field-label">I&apos;m interested in</legend>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {SERVICE_OPTIONS.map((opt) => {
+                  const active = form.service === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setForm((f) => ({ ...f, service: active ? "" : opt }))}
+                      className={`rounded-full px-4 py-2 text-[13.5px] transition-all duration-300 ${
+                        active ? "bg-night text-lavender" : "bg-lavender text-ink/75 hover:bg-lavender-2 hover:text-ink"
+                      }`}
+                    >
+                      {active && <span className="mr-1.5 text-peach">✓</span>}
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+              <input type="hidden" name="service" value={form.service} />
+            </fieldset>
+
+            <label className="mt-7 block">
+              <span className="field-label">Tell us a little more *</span>
+              <textarea
+                name="message"
+                rows={4}
+                required
+                placeholder="Goals, timelines, what's not working right now…"
+                value={form.message}
+                onChange={handleChange}
+                className="field-input resize-none"
+              />
+            </label>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="group inline-flex items-center justify-center gap-3 rounded-full bg-night py-2 pl-6 pr-2 text-[15px] font-semibold text-lavender transition-colors duration-300 hover:bg-ember disabled:opacity-60"
+              >
+                {status === "sending" ? "Sending…" : "Send message"}
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-peach text-night transition-transform duration-500 ease-expo group-hover:rotate-45">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" strokeWidth="1.6" />
+                  </svg>
+                </span>
+              </button>
+              <p className="text-[13px] text-mist">
+                Prefer to talk?{" "}
+                <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer" className="font-medium text-ink underline decoration-peach decoration-2 underline-offset-4">
+                  WhatsApp us
+                </a>
+              </p>
+            </div>
+
+            <div aria-live="polite">
+              <AnimatePresence>
+                {status === "success" && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="mt-6 rounded-xl bg-powder/50 px-4 py-3 text-sm text-ink"
+                  >
+                    Message sent. We&apos;ll get back to you soon.
+                  </motion.p>
+                )}
+                {status === "error" && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="mt-6 rounded-xl bg-peach/25 px-4 py-3 text-sm text-ink"
+                  >
+                    Something went wrong. Please try again, or reach us on{" "}
+                    <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer" className="font-medium underline">
+                      WhatsApp
+                    </a>{" "}
+                    directly.
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+          </form>
+        </Reveal>
       </div>
     </section>
   );

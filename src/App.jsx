@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MotionConfig } from "motion/react";
-import Intro from "./components/Intro";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Marquee from "./components/Marquee";
+import Story from "./components/Story";
+import ClientStrip from "./components/ClientStrip";
 import About from "./components/About";
 import Services from "./components/Services";
 import Work from "./components/Work";
-import Approach from "./components/Approach";
+import Process from "./components/Process";
+import Why from "./components/Why";
+import Faq from "./components/Faq";
 import CallToAction from "./components/CallToAction";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
-import { bindAnchorLinks, getLenis, initSmoothScroll } from "./lib/smoothScroll";
+import { bindAnchorLinks, initSmoothScroll } from "./lib/smoothScroll";
 
-export default function App({ showIntro = false }) {
-  const [introDone, setIntroDone] = useState(!showIntro);
-
+export default function App() {
   useEffect(() => {
     const stopScroll = initSmoothScroll();
     const unbind = bindAnchorLinks();
@@ -26,25 +25,18 @@ export default function App({ showIntro = false }) {
     };
   }, []);
 
-  // Hold the page still while the intro curtain is up.
-  useEffect(() => {
-    const lenis = getLenis();
-    if (!lenis) return;
-    if (introDone) lenis.start();
-    else lenis.stop();
-  }, [introDone]);
-
   return (
     <MotionConfig reducedMotion="user">
-      {!introDone && <Intro onDone={() => setIntroDone(true)} />}
       <Navbar />
       <main>
-        <Hero />
-        <Marquee />
+        <Story />
+        <ClientStrip />
         <About />
         <Services />
         <Work />
-        <Approach />
+        <Process />
+        <Why />
+        <Faq />
         <CallToAction />
         <Contact />
       </main>

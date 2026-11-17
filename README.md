@@ -13,27 +13,41 @@ npm run lint
 
 Vite 8 needs **Node 20.19+ or 22.12+**.
 
+## The story hero
+
+The page opens with a pinned, scroll-driven "film" (`src/components/Story.jsx`) in five chapters:
+
+| # | Chapter | What happens on screen |
+| --- | --- | --- |
+| 01 | Unseen | A crowd of grey posts; the camera zooms into one of them, the brand |
+| 02 | Story | A camera viewfinder frames a sunrise |
+| 03 | Craft | An edit timeline cuts between shots while colour-grade sliders move |
+| 04 | Reach | The frame becomes a phone, the post goes live, likes and enquiries arrive |
+| 05 | Growth | A growth line sweeps the screen behind the closing headline and buttons |
+
+Everything is drawn in code, so no footage is needed. The chapter lines live in `content.story.chapters`. Visitors with reduced motion turned on see chapter 05 as a static hero.
+
 ## Editing the site
 
 | What | Where |
 | --- | --- |
-| All copy (headlines, services, client list, stats, contact details) | `src/data/content.js` |
+| All copy: story lines, services, clients, process, FAQ, contact details | `src/data/content.js` |
 | Colours, fonts, easing | the `@theme` block at the top of `src/index.css` |
-| Client logos | `src/assets/clients/` (trimmed WebP files), listed in `content.js` |
+| Client logos | `src/assets/clients/` (trimmed WebP files), listed in `content.js` with an industry for the filters |
 
 In `content.js`, wrapping words in `*asterisks*` sets them in the italic serif accent, for example `"content that *converts.*"`.
 
-### Palette
+### Palette "Dusk"
 
 | Token | Hex | Used for |
 | --- | --- | --- |
-| `bone` | `#f3f0e7` | page background |
-| `ink` | `#141a16` | text, buttons |
-| `forest` | `#17211b` | dark sections, footer |
-| `sage` / `sage-soft` | `#a9b8a0` / `#d8dfd0` | accents, the Work section |
-| `tomato` | `#e8472c` | the signal colour: lens, highlights, CTAs |
+| `night` | `#0d1020` | story, process, footer |
+| `lavender` | `#f3f1f9` | page background |
+| `powder` | `#b3cbee` | secondary accent |
+| `peach` | `#ffa27f` | signal colour: buttons, highlights, the CTA |
+| `ember` | `#d9562f` | accent text on light backgrounds (readable contrast) |
 
-Fonts: **Fraunces** (display serif), **Geist** (body) and **Geist Mono** (labels), from Google Fonts.
+Fonts: **Bricolage Grotesque** (display), **Newsreader** italic (accent words), **Geist** (body) and **DM Mono** (labels), from Google Fonts.
 
 ## Contact form (EmailJS)
 
@@ -45,27 +59,30 @@ VITE_EMAILJS_TEMPLATE_ID=your_template_id
 VITE_EMAILJS_PUBLIC_KEY=your_public_key
 ```
 
-The form sends the fields `name`, `email`, `phone`, `company`, `service` and `message`. Clicking a service row in the Services section pre-selects that service in the form.
+The form sends `name`, `email`, `phone`, `company`, `service` and `message`. "Enquire about this" on a service card pre-selects that service in the form.
 
 ## Structure
 
 ```
 src/
   components/
-    Hero.jsx          zoom-lens hero (two stacked layers; see the comment at the top)
-    Navbar.jsx        floating nav + full-screen mobile menu
-    Marquee.jsx       scrolling services band
-    About.jsx         scroll-inked statement + stats
-    Services.jsx      editorial service list
-    Work.jsx          client logo wall
-    Approach.jsx      why-us list + four-step process
-    CallToAction.jsx  tomato CTA with a magnetic button
-    Contact.jsx       contact details + EmailJS form
+    Story.jsx         scroll-story hero (see the comment at the top)
+    Navbar.jsx        floating nav that switches light/dark with the section under it
+    ClientStrip.jsx   logo marquee after the story
+    About.jsx         scroll-inked statement, pillars, stat cards
+    Services.jsx      stacking service cards with drawn illustrations
+    Work.jsx          client grid with industry filters
+    Process.jsx       five-step timeline that fills as you scroll
+    Why.jsx           bento grid of reasons
+    Faq.jsx           accordion
+    CallToAction.jsx  peach CTA with a magnetic button
+    Contact.jsx       contact methods + EmailJS form
     Footer.jsx
-    Intro.jsx         first-visit curtain (once per session)
     Motion.jsx        shared animation helpers (Reveal, SplitText, ScrollWords, Magnetic)
-  lib/                smooth scroll, shared clock, text helpers
+  lib/
+    useScrollProgress.js  scroll progress that stays accurate for opacity (see the note inside)
+    smoothScroll.js, useMediaQuery.js, useNow.js, text.js, events.js
   data/content.js
 ```
 
-Every animation respects the visitor's **reduced motion** setting.
+Sections mark themselves `data-theme="dark"` or `"light"` so the navbar can adapt.

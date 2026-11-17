@@ -4,11 +4,11 @@ import {
   useInView,
   useMotionValue,
   useReducedMotion,
-  useScroll,
   useSpring,
   useTransform,
 } from "motion/react";
 import { parseEmphasis, stripEmphasis } from "../lib/text";
+import { useScrollProgress } from "../lib/useScrollProgress";
 
 const EASE = [0.16, 1, 0.3, 1];
 
@@ -33,7 +33,7 @@ export function SplitText({
   text,
   as: Tag = "h2",
   className = "",
-  emClass = "italic text-tomato",
+  emClass = "accent text-ember",
   delay = 0,
   stagger = 0.045,
 }) {
@@ -65,20 +65,20 @@ export function SplitText({
   );
 }
 
-function ScrollWord({ progress, range, em, children }) {
-  const opacity = useTransform(progress, range, [0.13, 1]);
+function ScrollWord({ progress, range, emClass, children }) {
+  const opacity = useTransform(progress, range, [0.14, 1]);
   return (
-    <motion.span style={{ opacity }} className={em ? "italic text-tomato" : undefined}>
+    <motion.span style={{ opacity }} className={emClass}>
       {children}
     </motion.span>
   );
 }
 
 /** Paragraph that "inks in" word by word as you scroll through it. */
-export function ScrollWords({ text, className = "" }) {
+export function ScrollWords({ text, className = "", emClass = "accent text-ember" }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.88", "end 0.55"] });
+  const scrollYProgress = useScrollProgress({ target: ref, offset: ["start 0.88", "end 0.55"] });
   const tokens = parseEmphasis(text);
   const n = tokens.length;
 
@@ -89,11 +89,11 @@ export function ScrollWords({ text, className = "" }) {
         {tokens.map((t, i) =>
           reduce ? (
             <Fragment key={i}>
-              <span className={t.em ? "italic text-tomato" : undefined}>{t.word}</span>{" "}
+              <span className={t.em ? emClass : undefined}>{t.word}</span>{" "}
             </Fragment>
           ) : (
             <Fragment key={i}>
-              <ScrollWord progress={scrollYProgress} range={[i / n, (i + 1.5) / n]} em={t.em}>
+              <ScrollWord progress={scrollYProgress} range={[i / n, (i + 1.5) / n]} emClass={t.em ? emClass : undefined}>
                 {t.word}
               </ScrollWord>{" "}
             </Fragment>

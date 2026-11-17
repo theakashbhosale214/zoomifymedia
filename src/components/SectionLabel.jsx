@@ -1,16 +1,16 @@
-/** "(01) — About ———————— Who we are" editorial section marker. */
-export default function SectionLabel({ index, label, aside, tone = "dark", className = "" }) {
-  const light = tone === "light";
+/** Small pill that opens each section: "● 01 · Studio". */
+export default function SectionLabel({ index, label, tone = "light", className = "" }) {
+  const dark = tone === "dark";
   return (
-    <div
-      className={`flex items-center gap-4 font-mono text-[10.5px] uppercase tracking-[0.2em] ${
-        light ? "text-bone/60" : "text-ink/55"
+    <span
+      className={`eyebrow inline-flex items-center gap-2.5 rounded-full border px-3.5 py-1.5 ${
+        dark ? "border-white/12 bg-white/5 text-lavender/70" : "border-ink/10 bg-paper/70 text-mist"
       } ${className}`}
     >
-      <span className="text-tomato">({index})</span>
-      <span>{label}</span>
-      <span aria-hidden="true" className={`h-px flex-1 ${light ? "bg-bone/15" : "bg-ink/15"}`} />
-      {aside && <span className="hidden sm:inline">{aside}</span>}
-    </div>
+      <span className="h-1.5 w-1.5 rounded-full bg-peach" aria-hidden="true" />
+      {index && <span className={dark ? "text-peach" : "text-ember"}>{index}</span>}
+      {index && <span aria-hidden="true">·</span>}
+      {label}
+    </span>
   );
 }
